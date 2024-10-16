@@ -3,24 +3,17 @@ class StockRepository {
         this.repository = dataSource.getRepository('Stock');
     }
 
-    findAll() {
-        return this.repository.find();
+    async findAll() {
+        return await this.repository.find();
     }
 
-    findByName(name) {
-        return this.repository.findOne({ where: { name } });
+    async findByName(name) {
+        return await this.repository.findOne({ where: { name } });
     }
 
-    save(stock) {
-        return this.repository.save(stock);
+    async save(stock) {
+        return await this.repository.save(stock);
     }
-
-    // findByPriceRange(min, max) {
-    //     return this.repository
-    //         .createQueryBuilder('stock')
-    //         .where('stock.price BETWEEN :min AND :max', { min, max })
-    //         .getMany();
-    // }
 }
 
 module.exports = StockRepository;

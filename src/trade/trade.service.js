@@ -17,19 +17,24 @@ const sellRepository = new SellRepository(AppDataSource);
 exports.getMyTrade = async (req, res) => {
     try {
         const token = req.headers.authorization;
-        const email = getEmail(token);
+        const email = await getEmail(token);
         const user = await userRepository.findByEmail(email);
         const myTrade = await tradeRepository.findByBuyerOrSellerId(user.id);
-        res.status(200).json(myTrade);
+        return res.status(200).json(myTrade);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to retrieve email', error });
+        return res.status(500).json({ message: 'Failed to retrieve email', error });
     }
+}
+
+exports.sellStock = async (req, res) => {
+
 }
 
 exports.buyStock = async (req, res) => {
     try {
         const stock = req.body.stock_id;
         const price = req.body.price;
+        const amount = req.body.amount;
         const user = await userRepository.findByEmail(await getEmail(req.headers.authorization));
 
         const sell = await sellRepository.findByPriceOrderDate(stock, price);
@@ -41,14 +46,39 @@ exports.buyStock = async (req, res) => {
         if (!sell) {
             const buyOrder = await buyRepository.save({
                 price: price,
+                amount: amount,
                 buyer_id: user.id,
                 stock_id: stock}
             )
 
-            res.status(200).json(buyOrder);
+            return res.status(200).json(buyOrder);
         }
 
+        if (sell.amount > amount) {
+            sell.amount = sell.amount - amount;
+            await sellRepository.updateAmount(sell);
+        }
+        else if (sell.amount === amount) {
+            await sellRepository.deleteBySellId(sell.id);
+        }
+        else if (sell.amount < amount) {
+            await sellRepository.deleteBySellId(sell.id);
+            await buyRepository.save({
+                price: price,
+                amount: (amount - sell.amount),
+                buyer_id: user.id,
+                stock_id: stock}
+            )
+        }
 
+        return res.status(200).json(
+            await tradeRepository.save({
+                price: sell.price,
+                stock_id: sell.stock_id,
+                seller_id: sell.seller_id,
+                buyer_id: user.id
+            })
+        );
 
     } catch (error) {
         if (error instanceof JwtExpiryError) {
@@ -60,6 +90,6 @@ exports.buyStock = async (req, res) => {
         }
 
         console.error(error);
-        res.status(500).json({ message: 'Failed to retrieve stock', error });
+        return res.status(500).json({ message: 'Failed to retrieve stock', error });
     }
 }

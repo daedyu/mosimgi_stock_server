@@ -4,6 +4,10 @@ class UserRepository {
     }
 
     async findByEmail(email) {
+        if (!email) {
+            return null;
+        }
+
         return await this.repository.createQueryBuilder('user')
             .where('user.email = :email', { email })
             .getOne();

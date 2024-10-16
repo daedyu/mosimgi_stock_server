@@ -9,8 +9,13 @@ module.exports = new EntitySchema({
             primary: true,
             generated: true,
         },
+
         price: {
             type: 'int',
+        },
+
+        amount: {
+            type: 'int'
         },
 
         seller_id: {
