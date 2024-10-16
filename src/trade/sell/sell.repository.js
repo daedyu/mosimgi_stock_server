@@ -15,18 +15,11 @@ class SellRepository {
             throw new Error('Stock ID and Price are required.');
         }
 
-
-        const result = await this.repository.createQueryBuilder('sell')
+        return await this.repository.createQueryBuilder('sell')
             .where('sell.stock_id = :stock_id', {stock_id})
             .andWhere('sell.price = :price', {price})
             .orderBy('sell.created_at', 'ASC')
             .getOne();
-
-        if (!result) {
-            return null;
-        }
-
-        return result;
 
     }
 

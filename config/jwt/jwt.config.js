@@ -1,22 +1,26 @@
 const jwt = require('jsonwebtoken');
 const JwtExpiryError = require("./JwtExpiryError");
+const {json} = require("express");
 const key = "ehdgoanfrhkqorentksdlakfmrhekfgehfhrgksmsladlqhdngktkdnflsfkkakstp";
 
-exports.getEmail = (str) => {
-    jwt.verify(str, key, (err, decoded) => {
-        if (err) {
+getEmail = (str) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(str, key, (err, decoded) => {
+            if (err) {
+                return reject(new JwtExpiryError());
+            }
 
-            throw new JwtExpiryError;
-        }
+            if (decoded.category !== 'access') {
+                return reject(new Error("jwt form error"));
+            }
 
-        if (decoded.category !== 'access' ) {
-            throw new Error("jwt form error");
-        }
+            if (!decoded.email) {
+                return reject(new Error("jwt form error"));
+            }
 
-        if (decoded.email === null) {
-            throw new Error("jwt form error");
-        }
-
-        return decoded.email;
-    })
+            resolve(decoded.email);
+        });
+    });
 }
+
+module.exports = { getEmail };

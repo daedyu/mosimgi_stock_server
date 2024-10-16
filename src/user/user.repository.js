@@ -4,7 +4,9 @@ class UserRepository {
     }
 
     async findByEmail(email) {
-        return this.repository.findOne({ where: { email } });
+        return await this.repository.createQueryBuilder('user')
+            .where('user.email = :email', { email })
+            .getOne();
     }
 }
 module.exports = UserRepository;

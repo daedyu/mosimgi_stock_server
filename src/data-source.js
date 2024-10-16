@@ -9,7 +9,7 @@ const AppDataSource = new DataSource({
     password: 'mingyu08',
     database: 'mosimgi',
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: [
         join(__dirname, '/stock/stock.entity.js'),
         join(__dirname, '/trade/trade.entity.js'),
