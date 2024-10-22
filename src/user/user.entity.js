@@ -26,6 +26,9 @@ module.exports = new EntitySchema({
         },
         profile_image: {
             type: "varchar",
+        },
+        money: {
+            type: "bigint"
         }
     },
     relations: {
@@ -48,6 +51,6 @@ module.exports = new EntitySchema({
             type: 'one-to-many',
             target: 'Buy',
             inverseSide: 'buyer_id',
-        },
+        }
     },
 })

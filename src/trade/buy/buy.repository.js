@@ -7,13 +7,21 @@ class BuyRepository {
         return await this.repository.save(buy);
     }
 
+    async deleteByBuyId(buy_id) {
+        return await this.repository.delete({id: buy_id});
+    }
+
+    async updateAmount(buy) {
+        return await this.repository.update({ id: buy.id }, { amount: buy.amount })
+    }
+
     async findByPriceOrderDate(stock_id, price) {
         if (stock_id == null || price == null) {
             throw new Error('Stock ID and Price are required.');
         }
 
         return await this.repository.createQueryBuilder('buy')
-            .where('buy.stockId = :stock_id', { stock_id })
+            .where('buy.stock_id = :stock_id', { stock_id })
             .andWhere('buy.price = :price', { price })
             .orderBy('buy.created_at', 'ASC')
             .getOne();

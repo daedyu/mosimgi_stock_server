@@ -1,9 +1,12 @@
 const { AppDataSource } = require('../data-source');
 const StockRepository = require("./stock.repository");
 const {MustBeEntityError} = require("typeorm");
-
+const {getEmail} = require("../../config/jwt/jwt.config");
+const UserRepository = require("../user/user.repository");
+const buyRepository = require("../trade/buy/buy.repository");
 
 const stockRepository = new StockRepository(AppDataSource);
+const userRepository = new UserRepository(AppDataSource);
 
 exports.getAllStocks = async (req, res) => {
     try {
@@ -13,6 +16,15 @@ exports.getAllStocks = async (req, res) => {
         res.status(500).json({ message: 'Failed to retrieve stocks', error });
     }
 };
+
+exports.getMostTradeStocks = async (req, res) => {
+    try {
+        const stocks = await stockRepository.findMostTrade();
+        res.json(stocks);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to retrieve stocks', error });
+    }
+}
 
 exports.saveStock = async (req, res) => {
     try {

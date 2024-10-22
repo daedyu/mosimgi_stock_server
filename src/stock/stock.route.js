@@ -1,8 +1,10 @@
 const express = require('express');
-const {getStocksByPriceRange, getStockByName, getAllStocks, saveStock} = require("./stock.service");
+const {getStocksByPriceRange, getStockByName, getAllStocks, saveStock, getMostTradeStocks} = require("./stock.service");
 const router = express.Router();
 
 router.get('/', getAllStocks);
+
+router.get('/most-trade', getMostTradeStocks);
 
 router.get('/:name', getStockByName);
 
