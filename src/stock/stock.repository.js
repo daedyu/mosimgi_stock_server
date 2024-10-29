@@ -10,8 +10,9 @@ class StockRepository {
                 'stock.id AS stock_id',
                 'stock.name AS stock_name',
                 'stock.description AS stock_description',
-                'trade.price AS trade_price'
+                'MAX(trade.price) AS trade_price'
             ])
+            .groupBy('stock.id')
             .orderBy('stock.id', 'ASC')
             .getRawMany();
     }
@@ -20,8 +21,19 @@ class StockRepository {
         return await this.repository.findOne({ where: { id } });
     }
 
-    async findByName(name) {
-        return await this.repository.findOne({ where: { name } });
+    async findByIdForTrades(id) {
+        const stock = await this.repository.findOne({
+            where: { id },
+            relations: ['trades']
+        });
+
+        console.log(stock);
+        return stock.trades.map(trade => (
+            {
+                date: trade.created_at,
+                value: trade.price
+            }
+        ));
     }
 
     async findMostTrade() {

@@ -9,7 +9,7 @@ const favoriteRepository = new FavoriteRepository(AppDataSource);
 const stockRepository = new StockRepository(AppDataSource);
 
 exports.AddOrDeleteFavorite = async (req, res) => {
-    // try {
+    try {
         const token = req.headers.authorization;
         const email = await getEmail(token);
         const user = await userRepository.findByEmail(email);
@@ -29,7 +29,7 @@ exports.AddOrDeleteFavorite = async (req, res) => {
 
         return res.status(200).json(response);
 
-    // } catch (error) {
-    //     return res.status(500).json({ message: 'Failed to retrieve email', error });
-    // }
+    } catch (error) {
+        return res.status(500).json({ message: 'Failed to retrieve email', error });
+    }
 }

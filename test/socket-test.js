@@ -6,7 +6,9 @@ socket.on('connect', () => {
     console.log('Connected to server');
 
     // 주식 구매 이벤트 전송
-    socket.emit('buyStock', { stockSymbol: 'AAPL', quantity: 10 });
+    socket.emit('join', 1);
+
+    socket.disconnect();
 });
 
 // 거래 결과 수신

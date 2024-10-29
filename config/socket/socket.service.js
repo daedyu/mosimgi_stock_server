@@ -10,9 +10,13 @@ class SocketService {
         this.io.on('connection', (socket) => {
             console.log('A user connected');
 
-            // 소켓 이벤트 핸들러 추가
+            socket.on('join', (stockId) => {
+                socket.join(stockId);
+                console.log(`User ${socket.id} joined room: ${stockId}`);
+            });
+
             socket.on('requestStockData', () => {
-                const latestStockData = {}; // 실제 데이터로 대체
+                const latestStockData = {};
                 socket.emit('stockData', latestStockData);
             });
 
@@ -20,6 +24,10 @@ class SocketService {
                 console.log('User disconnected');
             });
         });
+    }
+
+    updatePrice(stockId, tradeData) {
+        this.io.to(stockId).emit('updatePrice', {tradeData});
     }
 
     emit(event, data) {

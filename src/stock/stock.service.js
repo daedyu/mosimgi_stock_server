@@ -4,8 +4,10 @@ const {MustBeEntityError} = require("typeorm");
 const {getEmail} = require("../../config/jwt/jwt.config");
 const UserRepository = require("../user/user.repository");
 const buyRepository = require("../trade/buy/buy.repository");
+const FavoriteRepository = require("../favorite/favorite.repository");
 
 const stockRepository = new StockRepository(AppDataSource);
+const favoriteRepository = new FavoriteRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
 
 exports.getAllStocks = async (req, res) => {
@@ -39,25 +41,21 @@ exports.saveStock = async (req, res) => {
     }
 }
 
-exports.getStockByName = async (req, res) => {
+exports.getStockById = async (req, res) => {
     try {
-        const stock = await stockRepository.findByName(req.params.name);
+        const token = req.headers.authorization;
+        const email = await getEmail(token);
+        const user = await userRepository.findByEmail(email);
+        const stock = await stockRepository.findByIdForTrades(req.params.name);
+        const is_liked = await favoriteRepository.findIsLike(user.id, stock.id);
         if (!stock) {
             return res.status(404).json({ message: 'Stock not found' });
         }
-        res.json(stock);
+        res.json({
+            is_liked: is_liked,
+            graph: stock
+        });
     } catch (error) {
         res.status(500).json({ message: 'Failed to retrieve stock', error });
-    }
-};
-
-exports.getStocksByPriceRange = async (req, res) => {
-    try {
-        const min = parseFloat(req.params.min);
-        const max = parseFloat(req.params.max);
-        const stocks = await stockRepository.findByPriceRange(min, max);
-        res.json(stocks);
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to retrieve stocks', error });
     }
 };

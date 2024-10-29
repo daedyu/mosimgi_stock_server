@@ -39,11 +39,11 @@ exports.sellStock = async (req, res) => {
         }
 
         if (!buy) {
-            const sellOrder = await buyRepository.save(
+            const sellOrder = await sellRepository.save(
                 {
                 price: price,
                 amount: amount,
-                buyer_id: user.id,
+                seller_id: user.id,
                 stock_id: stock
                 }
             );
