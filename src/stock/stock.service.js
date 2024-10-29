@@ -46,16 +46,19 @@ exports.getStockById = async (req, res) => {
         const token = req.headers.authorization;
         const email = await getEmail(token);
         const user = await userRepository.findByEmail(email);
-        const stock = await stockRepository.findByIdForTrades(req.params.name);
+        const stock = await stockRepository.findById(req.params.name);
+        const stock_price = await stockRepository.findByIdForTrades(req.params.name);
         const is_liked = await favoriteRepository.findIsLike(user.id, stock.id);
-        if (!stock) {
+        if (!stock_price) {
             return res.status(404).json({ message: 'Stock not found' });
         }
         res.json({
+            stock_name: stock.name,
             is_liked: is_liked,
-            graph: stock
+            graph: stock_price
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Failed to retrieve stock', error });
     }
 };

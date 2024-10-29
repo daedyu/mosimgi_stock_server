@@ -16,10 +16,9 @@ class FavoriteRepository {
 
     async findIsLike(userId, stockId) {
         let is_liked = await this.repository.createQueryBuilder('favorite')
-            .where('user_id', userId)
-            .where('stock_id', stockId)
-            .getRawOne();
-
+            .where('favorite.user_id = :userId', { userId })
+            .andWhere('favorite.stock_id = :stockId', { stockId })
+            .getOne();
         return !!is_liked;
     }
 

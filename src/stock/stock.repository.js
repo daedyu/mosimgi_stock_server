@@ -27,7 +27,6 @@ class StockRepository {
             relations: ['trades']
         });
 
-        console.log(stock);
         return stock.trades.map(trade => (
             {
                 date: trade.created_at,
