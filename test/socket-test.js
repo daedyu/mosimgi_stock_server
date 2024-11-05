@@ -1,19 +1,17 @@
 const io = require('socket.io-client');
-const socket = io('http://localhost:3000');
+const socket = io('ws://localhost:3000');
 
 // 서버와 연결되면 바로 buyStock 이벤트 전송
 socket.on('connect', () => {
     console.log('Connected to server');
 
-    // 주식 구매 이벤트 전송
     socket.emit('join', 1);
 
-    socket.disconnect();
 });
 
 // 거래 결과 수신
-socket.on('transactionResult', (result) => {
-    console.log('Transaction result:', result);
+socket.on('updatePrice', (data) => {
+    console.log('서버로부터 수신한 거래 데이터:', data);
 });
 
 // 주식 가격 업데이트 수신
