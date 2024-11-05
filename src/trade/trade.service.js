@@ -12,6 +12,7 @@ const userRepository = new UserRepository(AppDataSource);
 
 const buyRepository = new BuyRepository(AppDataSource);
 const sellRepository = new SellRepository(AppDataSource);
+const socketService = require("../../config/socket/socket.service");
 
 exports.getMyTrade = async (req, res) => {
     try {
@@ -75,6 +76,11 @@ exports.sellStock = async (req, res) => {
             seller_id: buy.buyer_id,
             buyer_id: user.id
         });
+
+        socketService.instance.updatePrice(stock, {
+            value: tradeResult.price,
+            date: tradeResult.created_at,
+        })
 
         return res.status(200).json(
             {
@@ -145,6 +151,11 @@ exports.buyStock = async (req, res) => {
             seller_id: sell.seller_id,
             buyer_id: user.id
         });
+
+        socketService.instance.updatePrice(stock, {
+            value: tradeResult.price,
+            date: tradeResult.created_at,
+        })
 
         return res.status(200).json(
             {
