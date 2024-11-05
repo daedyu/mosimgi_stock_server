@@ -1,21 +1,13 @@
 const { EntitySchema } = require('typeorm');
 
 module.exports = new EntitySchema({
-    name: 'Buy',
-    tableName: 'buy_order',
+    name: 'Amount',
+    tableName: 'amount',
     columns: {
         id: {
             type: 'int',
             primary: true,
             generated: true,
-        },
-
-        price: {
-            type: 'int',
-        },
-
-        amount: {
-            type: 'int'
         },
 
         buyer_id: {
@@ -24,6 +16,10 @@ module.exports = new EntitySchema({
 
         stock_id: {
             type: 'int',
+        },
+
+        amount: {
+            type: 'int'
         },
 
         created_at: {
@@ -45,4 +41,5 @@ module.exports = new EntitySchema({
             cascade: true,
         },
     },
+
 });

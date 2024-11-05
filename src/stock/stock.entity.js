@@ -21,7 +21,7 @@ module.exports = new EntitySchema({
         trades: {
             type: 'one-to-many',
             target: 'Trade',
-            inverseSide: 'stock_id'
+            inverseSide: 'stock'
         },
         buys: {
             type: 'one-to-many',

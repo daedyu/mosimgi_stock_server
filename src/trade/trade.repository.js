@@ -3,12 +3,12 @@ class TradeRepository {
         this.repository = dataSource.getRepository('Trade');
     }
 
-    save(trade) {
-        return this.repository.save(trade);
+    async save(trade) {
+        return await this.repository.save(trade);
     }
 
-    findByBuyerOrSellerId(userId) {
-        return this.repository.createQueryBuilder('trade')
+    async findByBuyerOrSellerId(userId) {
+        return await this.repository.createQueryBuilder('trade')
             .where('trade.buyerId = :userId OR trade.sellerId = :userId', { userId })
             .getMany();
     }

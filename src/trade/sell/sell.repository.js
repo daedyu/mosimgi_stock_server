@@ -6,8 +6,24 @@ class SellRepository {
         this.repository = dataSource.getRepository("Sell");
     }
 
-    save(sell) {
-        return this.repository.save(sell);
+    async deleteBySellId(sell_id) {
+        return await this.repository.delete({id: sell_id});
+    }
+
+    async save(sell) {
+        return await this.repository.save(sell);
+    }
+
+    async updatePrice(sell, user_id) {
+        return await this.repository.update({seller_id: user_id}, { price: sell.price })
+    }
+
+    async updateAmount(sell) {
+        return await this.repository.update({ id: sell.id }, { amount: sell.amount })
+    }
+
+    async updatePriceAndAmount(sell, user_id) {
+        return await this.repository.update({ seller_id: user_id }, { price: sell.price, amount: sell.amount })
     }
 
     async findByPriceOrderDate(stock_id, price) {
@@ -21,10 +37,6 @@ class SellRepository {
             .orderBy('sell.created_at', 'ASC')
             .getOne();
 
-    }
-
-    async deleteById(id) {
-        await this.repository.delete(id);
     }
 }
 
