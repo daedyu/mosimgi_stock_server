@@ -24,8 +24,8 @@ class FavoriteRepository {
 
     async findOneByUserAndStockId(userId, stockId) {
         return await this.repository.createQueryBuilder('favorite')
-            .where('user_id', userId)
-            .where('stock_id', stockId)
+            .where('user_id = :userId', {userId})
+            .andWhere('stock_id = :stockId', {stockId})
             .getRawOne();
     }
 

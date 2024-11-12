@@ -22,9 +22,9 @@ exports.AddOrDeleteFavorite = async (req, res) => {
         let response;
 
         if (existingFavorite) {
-            response = await favoriteRepository.delete(user.id, stock);
+            response = !await favoriteRepository.delete(user.id, stock);
         } else {
-            response = await favoriteRepository.save(user.id, stock);
+            response = !!(await favoriteRepository.save(user.id, stock));
         }
 
         return res.status(200).json(response);

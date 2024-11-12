@@ -3,12 +3,27 @@ const StockRepository = require("./stock.repository");
 const {MustBeEntityError} = require("typeorm");
 const {getEmail} = require("../../config/jwt/jwt.config");
 const UserRepository = require("../user/user.repository");
-const buyRepository = require("../trade/buy/buy.repository");
+const BuyRepository = require("../trade/buy/buy.repository");
 const FavoriteRepository = require("../favorite/favorite.repository");
+const SellRepository = require("../trade/sell/sell.repository");
 
+const sellRepository = new SellRepository(AppDataSource);
+const buyRepository = new BuyRepository(AppDataSource);
 const stockRepository = new StockRepository(AppDataSource);
 const favoriteRepository = new FavoriteRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
+
+exports.getMyFavorite = async (req, res) => {
+    try {
+        const token = req.headers.authorization;
+        const email = await getEmail(token);
+        const user = await userRepository.findByEmail(email);
+
+        return stockRepository.findByLike(user.id);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to retrieve stocks', error });
+    }
+}
 
 exports.getAllStocks = async (req, res) => {
     try {
@@ -49,16 +64,28 @@ exports.getStockById = async (req, res) => {
         const stock = await stockRepository.findById(req.params.name);
         const stock_price = await stockRepository.findByIdForTrades(req.params.name);
         const is_liked = await favoriteRepository.findIsLike(user.id, stock.id);
+        const ask_data = await ask_price(stock.id);
         if (!stock_price) {
             return res.status(404).json({ message: 'Stock not found' });
         }
         res.json({
             stock_name: stock.name,
             is_liked: is_liked,
-            graph: stock_price
+            graph: stock_price,
+            ask_data: ask_data,
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to retrieve stock', error });
     }
 };
+
+async function ask_price(stock_id) {
+    let buy_data = await buyRepository.findByIdAndDate(stock_id);
+    let sell_data = await sellRepository.findByIdAndDate(stock_id);
+
+    return {
+        buy: buy_data,
+        sell: sell_data,
+    }
+}

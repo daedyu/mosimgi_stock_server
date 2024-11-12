@@ -22,8 +22,12 @@ class SellRepository {
         return await this.repository.update({ id: sell.id }, { amount: sell.amount })
     }
 
-    async updatePriceAndAmount(sell, user_id) {
-        return await this.repository.update({ seller_id: user_id }, { price: sell.price, amount: sell.amount })
+    async findByIdAndDate(stock_id) {
+        return await this.repository.createQueryBuilder('sell')
+            .where('sell.stock_id = :stock_id', {stock_id})
+            .andWhere('DATE(sell.created_at) = CURRENT_DATE')
+            .orderBy('sell.created_at', 'DESC')
+            .getMany();
     }
 
     async findByPriceOrderDate(stock_id, price) {
