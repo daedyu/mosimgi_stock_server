@@ -6,12 +6,21 @@ const UserRepository = require("../user/user.repository");
 const BuyRepository = require("../trade/buy/buy.repository");
 const FavoriteRepository = require("../favorite/favorite.repository");
 const SellRepository = require("../trade/sell/sell.repository");
+const req = require("express/lib/request");
 
 const sellRepository = new SellRepository(AppDataSource);
 const buyRepository = new BuyRepository(AppDataSource);
 const stockRepository = new StockRepository(AppDataSource);
 const favoriteRepository = new FavoriteRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
+
+exports.getPopular = async (req, res) => {
+    try {
+        res.json(await stockRepository.findStocksOrderedByFavoriteCount())
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
 
 exports.getMyFavorite = async (req, res) => {
     try {

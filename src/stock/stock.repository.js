@@ -3,6 +3,22 @@ class StockRepository {
         this.repository = dataSource.getRepository('Stock');
     }
 
+    async findStocksOrderedByFavoriteCount() {
+        return await this.repository
+            .createQueryBuilder('stock')
+            .leftJoin('stock.trades', 'trade')
+            .leftJoin('Favorite', 'favorite', 'favorite.stock_id = stock.id')
+            .select([
+                'stock.id as stock_id',
+                'stock.name as stock_name',
+                'stock.description as description',
+                'MAX(trade.price) as trade_price'
+            ])
+            .groupBy('stock.id, stock.name, stock.description')
+            .orderBy('COUNT(DISTINCT favorite.user_id)', 'DESC')
+            .getRawMany();
+    }
+
     async findByLike(userId) {
         const result = await this.repository.createQueryBuilder('stock')
             .leftJoin('stock.trades', 'trade') // stock과 trade 테이블을 조인
