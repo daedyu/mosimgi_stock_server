@@ -33,7 +33,7 @@ exports.sellStock = async (req, res) => {
         const amount = req.body.amount;
         const user = await userRepository.findByEmail(await getEmail(req.headers.authorization));
 
-        const buy = await buyRepository.findByPriceOrderDate(stock, price);
+        const buy = await buyRepository.findByPriceAndId(stock, price);
 
         if (!user) {
             return res.status(401).send({message: "유저를 찾을 수 없습니다."});

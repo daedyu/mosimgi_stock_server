@@ -2,6 +2,6 @@ const express = require('express');
 const {AddOrDeleteFavorite} = require("./favorite.service");
 const router = express.Router();
 
-router.get('/', AddOrDeleteFavorite);
+router.post('/', AddOrDeleteFavorite);
 
 module.exports = router;

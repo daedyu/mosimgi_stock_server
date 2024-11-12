@@ -15,7 +15,15 @@ class BuyRepository {
         return await this.repository.update({ id: buy.id }, { amount: buy.amount })
     }
 
-    async findByPriceOrderDate(stock_id, price) {
+    async findByIdAndDate(stock_id) {
+        return await this.repository.createQueryBuilder('buy')
+            .where('buy.stock_id = :stock_id', {stock_id})
+            .andWhere('DATE(buy.created_at) = CURRENT_DATE')
+            .orderBy('buy.created_at', 'DESC')
+            .getMany();
+    }
+
+    async findByPriceAndId(stock_id, price) {
         if (stock_id == null || price == null) {
             throw new Error('Stock ID and Price are required.');
         }
