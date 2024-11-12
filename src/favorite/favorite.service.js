@@ -13,12 +13,9 @@ exports.AddOrDeleteFavorite = async (req, res) => {
         const token = req.headers.authorization;
         const email = await getEmail(token);
         const user = await userRepository.findByEmail(email);
-        const stock = await stockRepository.findById(req.params.stock);
+        const stock = await stockRepository.findById(req.query.stock);
 
         const existingFavorite = await favoriteRepository.findOneByUserAndStockId(user.id, stock.id);
-
-        console.log(existingFavorite);
-
         let response;
 
         if (existingFavorite) {

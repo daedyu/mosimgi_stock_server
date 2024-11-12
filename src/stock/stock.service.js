@@ -19,7 +19,7 @@ exports.getMyFavorite = async (req, res) => {
         const email = await getEmail(token);
         const user = await userRepository.findByEmail(email);
 
-        return stockRepository.findByLike(user.id);
+        res.json(await stockRepository.findByLike(user.id));
     } catch (error) {
         res.status(500).json({ message: 'Failed to retrieve stocks', error });
     }

@@ -20,7 +20,6 @@ class StockRepository {
 
         console.log(result);
 
-        // 좋아요한 주식이 없다면 빈 배열 반환
         return result;
     }
 

@@ -10,10 +10,6 @@ class FavoriteRepository {
         });
     }
 
-    async findAllByUser(userId) {
-        return await this.repository.find({user_id: userId});
-    }
-
     async findIsLike(userId, stockId) {
         let is_liked = await this.repository.createQueryBuilder('favorite')
             .where('favorite.user_id = :userId', { userId })
@@ -24,9 +20,9 @@ class FavoriteRepository {
 
     async findOneByUserAndStockId(userId, stockId) {
         return await this.repository.createQueryBuilder('favorite')
-            .where('user_id = :userId', {userId})
-            .andWhere('stock_id = :stockId', {stockId})
-            .getRawOne();
+            .where('favorite.user_id = :userId', {userId})
+            .andWhere('favorite.stock_id = :stockId', {stockId})
+            .getOne();
     }
 
     async delete(userId, stockId) {
