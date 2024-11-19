@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Chart</title>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+<!-- 차트를 표시할 컨테이너 -->
+<div id="tradingview_widget" style="width: 300px; height: 200px;"></div>
+
+<script type="text/javascript">
+    new TradingView.widget({
+        "width": 300,        // 차트의 너비
+        "height": 200,       // 차트의 높이
+        "symbol": "NASDAQ:AAPL",  // 표시할 주식 심볼
+        "interval": "D",     // 시간 간격 (예: D는 일간)
+        "theme": "light",    // 테마 (light 또는 dark)
+        "style": "1",        // 차트 스타일
+        "locale": "en",      // 언어 설정
+        "toolbar_bg": "#f1f3f6",   // 툴바 배경색
+        "container_id": "tradingview_widget" // 컨테이너 ID
+    });
+</script>
+</body>
+</html>
