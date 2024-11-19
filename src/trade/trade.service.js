@@ -6,6 +6,8 @@ const BuyRepository = require("./buy/buy.repository");
 const SellRepository = require("./sell/sell.repository");
 const {MustBeEntityError} = require("typeorm");
 const JwtExpiryError = require("../../config/jwt/JwtExpiryError");
+const {deleteStock, setStockMe} = require("../stock/me/stock.me.usecase");
+
 
 const tradeRepository = new TradeRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
