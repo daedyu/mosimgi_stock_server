@@ -6,8 +6,7 @@ const BuyRepository = require("./buy/buy.repository");
 const SellRepository = require("./sell/sell.repository");
 const {MustBeEntityError} = require("typeorm");
 const JwtExpiryError = require("../../config/jwt/JwtExpiryError");
-const {deleteStock, setStockMe} = require("../stock/me/stock.me.usecase");
-
+const {deleteStock, addStockMe} = require("../stock/me/stock.me.usecase");
 
 const tradeRepository = new TradeRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
@@ -34,6 +33,10 @@ exports.sellStock = async (req, res) => {
         const price = req.body.price;
         const amount = req.body.amount;
         const user = await userRepository.findByEmail(await getEmail(req.headers.authorization));
+
+        if (!await deleteStock(amount, user.id, stock)) {
+            return res.status(400).json({ message: '보유 수량보다 많음'});
+        }
 
         const buy = await buyRepository.findByPriceAndId(stock, price);
 
@@ -146,6 +149,9 @@ exports.buyStock = async (req, res) => {
                 stock_id: stock}
             )
         }
+
+        console.log("주식 추가 호출")
+        await addStockMe(user.id, stock, amount);
 
         let tradeResult = await tradeRepository.save({
             price: sell.price,

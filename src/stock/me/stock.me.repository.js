@@ -7,6 +7,7 @@ class StockMeRepository {
         const records = Array.from({ length: amount }, () => ({
             stock_id: stockId,
             user_id: userId,
+            created_at: new Date(),
         }));
 
         return await this.repository.save(records);
@@ -24,8 +25,19 @@ class StockMeRepository {
     }
 
     async deleteStock(userId, stockId, count) {
+        const stockCount = await this.repository
+            .createQueryBuilder('sm')
+            .where('stock_id = :stockId', { stockId })
+            // .where(sm.user_id = :userId', { userId })
+            .andWhere('sm.stock_id = :stockId', { stockId })
+            .getCount();
+
+        if (count > stockCount) {
+            return null;
+        }
+
         const records = await this.repository
-            .createQueryBuilder('stock_me', 'sm')
+            .createQueryBuilder('sm')
             .where('sm.user_id = :userId', { userId })
             .andWhere('sm.stock_id = :stockId', { stockId })
             .orderBy('sm.created_at', 'ASC')
@@ -45,3 +57,5 @@ class StockMeRepository {
         return records.length;
     }
 }
+
+module.exports = StockMeRepository;

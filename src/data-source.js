@@ -17,6 +17,7 @@ const AppDataSource = new DataSource({
         join(__dirname, '/trade/buy/buy.entity.js'),
         join(__dirname, '/trade/sell/sell.entity.js'),
         join(__dirname, '/favorite/favorite.entity.js'),
+        join(__dirname, '/stock/me/stock.me.entity.js'),
     ],
 });
 

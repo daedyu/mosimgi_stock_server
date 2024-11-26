@@ -1,13 +1,16 @@
 const { AppDataSource } = require('../../data-source');
 const UserRepository = require("../../user/user.repository");
+const  StockMeRepository  = require("./stock.me.repository");
 
 const stockMeRepository = new StockMeRepository(AppDataSource);
 const userRepository = new UserRepository(AppDataSource);
 const {getEmail} = require("../../../config/jwt/jwt.config");
 
-exports.setStockMe = async (user, stock, amount) => {
+exports.addStockMe = async (user, stock, amount) => {
+    console.log("주식 추가")
     try {
-        await stockMeRepository.save(user, stock, amount);
+        console.log("유저", user);
+        await stockMeRepository.save(stock, user, amount);
     } catch (error) {
         console.log(error);
     }
@@ -15,7 +18,7 @@ exports.setStockMe = async (user, stock, amount) => {
 
 exports.deleteStock = async (amount, user, stock) => {
     try {
-        await stockMeRepository.deleteStock(user, stock, amount);
+        return await stockMeRepository.deleteStock(user, stock, amount);
     } catch (e) {
         console.log(e);
     }
